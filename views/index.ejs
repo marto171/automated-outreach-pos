@@ -1,0 +1,35 @@
+<%- include('partials/header', { title: title }) %>
+
+<h2>Welcome to the Dashboard</h2>
+<p>This system automates outreach to manufacturers and manages subsequent processes.</p>
+
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <h3>Manufacturers Tracked</h3>
+        <p><%= manufacturerCount %></p>
+    </div>
+    <div class="stat-card">
+        <h3>Open Deals</h3>
+        <p><%= openDealsCount %></p>
+    </div>
+    <div class="stat-card">
+        <h3>Deals Closed (Won)</h3>
+        <p><%= closedDealsCount %></p>
+    </div>
+    <div class="stat-card">
+        <h3>Active Campaigns</h3>
+        <p><%= activeCampaignsCount %></p>
+    </div>
+</div>
+
+<h3>Quick Actions</h3>
+<ul>
+    <li><a href="/ui/manufacturers">View & Manage Manufacturers</a></li>
+    <li><a href="/sourcing/scan" onclick="event.preventDefault(); document.getElementById('scan-form').submit();">Run Simulated Manufacturer Scan</a></li>
+    <form id="scan-form" action="/sourcing/scan" method="POST" style="display: none;"></form>
+    <li><a href="/ui/deals">View Deal Menu</a></li>
+    <li><a href="/feedback">Manage Product Feedback</a></li>
+</ul>
+
+
+<%- include('partials/footer') %>

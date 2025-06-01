@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header>
+    <h1>Automated Outreach PoC</h1>
+    <nav>
+        <a href="/ui/dashboard">Dashboard</a> |
+        <a href="/ui/manufacturers">Manufacturers</a> |
+        <a href="/ui/deals">Deals</a> |
+        <a href="/feedback">Feedback Loop</a> |
+        <a href="/ui/sales-users">Sales Users</a>
+    </nav>
+</header>
+<main class="container">
+    <% if (locals.successMessage) { %>
+        <div class="message success-message"><%= successMessage %></div>
+    <% } %>
+    <% if (locals.errorMessage) { %>
+        <div class="message error-message"><%= errorMessage %></div>
+<% } %>

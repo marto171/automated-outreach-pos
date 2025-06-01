@@ -1,0 +1,63 @@
+<%- include('partials/header', { title: content.pageTitle }) %>
+
+<style>
+    /* Basic styling for the product page */
+    .product-hero { background-color: #f0f0f0; padding: 40px 20px; text-align: center; margin-bottom: 30px; }
+    .product-hero h1 { font-size: 2.5em; margin-bottom: 10px; color: #333; }
+    .product-hero .tagline { font-size: 1.2em; color: #555; margin-bottom: 20px; }
+    .product-content { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+    .product-content h2 { color: #444; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px;}
+    .product-features ul { list-style: disc; margin-left: 20px; }
+    .product-features li { margin-bottom: 10px; }
+    .cta-button {
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        padding: 15px 30px;
+        text-decoration: none;
+        font-size: 1.1em;
+        border-radius: 5px;
+        margin-top: 20px;
+        transition: background-color 0.3s ease;
+    }
+    .cta-button:hover { background-color: #0056b3; }
+    .manufacturer-info { font-style: italic; color: #777; margin-top: 40px; text-align: center; }
+</style>
+
+<div class="product-hero">
+    <h1><%= content.headline %></h1>
+    <p class="tagline"><%= content.tagline %></p>
+    <% if (content.callToAction) { %>
+        <a href="#order" class="cta-button"><%= content.callToAction %></a>
+    <% } %>
+</div>
+
+<div class="product-content">
+    <section class="product-description">
+        <h2>About <%= content.productName %></h2>
+        <%- content.productDescription.replace(/\n/g, '<br>') %>  <%# Allow basic newlines from Gemini output %>
+    </section>
+
+    <% if (content.features && content.features.length > 0) { %>
+        <section class="product-features">
+            <h2>Key Features</h2>
+            <ul>
+                <% content.features.forEach(feature => { %>
+                    <li><%= feature %></li>
+                <% }) %>
+            </ul>
+        </section>
+    <% } %>
+
+    <section id="order" style="text-align: center; margin-top:40px; padding-bottom: 40px;">
+        <% if (content.callToAction) { %>
+            <h2>Interested?</h2>
+            <a href="#" class="cta-button" onclick="alert('Order process not implemented in PoC.'); return false;"><%= content.callToAction %></a>
+        <% } %>
+    </section>
+
+    <p class="manufacturer-info">Brought to you by <%= content.manufacturerName %>.</p>
+</div>
+
+
+<%- include('partials/footer') %>

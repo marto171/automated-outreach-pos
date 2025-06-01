@@ -1,0 +1,78 @@
+<%- include('partials/header', { title: title }) %>
+
+<h2><%= title %></h2>
+<p>Manufacturer Status: <span class="status-<%= manufacturer.status.replace('_', '-') %>"><%= manufacturer.status.replace('_',' ').toUpperCase() %></span></p>
+
+<h3>Products for <%= manufacturer.name %></h3>
+<% if (products.length > 0) { %>
+    <% products.forEach(product => { %>
+        <div class="product-card card">
+            <h4><%= product.name %> (<%= product.category %>)</h4>
+            <p><strong>Description:</strong> <%= product.description.substring(0,150) %>...</p>
+            <p><strong>Website:</strong>
+                <% if (product.websiteUrl) { %>
+                    <a href="<%= product.websiteUrl %>" target="_blank">View Generated Site</a>
+                <% } else { %>
+                    Not Generated
+                <% } %>
+            </p>
+
+            <div class="action-section">
+                <h5>Generate/Update Product Website</h5>
+                <form action="/automation/product/<%= product._id %>/generate-site" method="POST" class="form-layout">
+                    <input type="hidden" name="manufacturerId" value="<%= manufacturer._id %>">
+                    <div><label for="productName-<%= product._id %>">Product Name (confirm/update):</label>
+                        <input type="text" id="productName-<%= product._id %>" name="productName" value="<%= product.name %>"></div>
+                    <div><label for="productCategory-<%= product._id %>">Category (confirm/update):</label>
+                        <input type="text" id="productCategory-<%= product._id %>" name="productCategory" value="<%= product.category %>"></div>
+                    <button type="submit">Generate/Refresh Site Content</button>
+                </form>
+            </div>
+
+            <div class="action-section">
+                <h5>Generate Campaign Assets</h5>
+                <form action="/automation/product/<%= product._id %>/launch-campaign" method="POST" class="form-layout">
+                    <input type="hidden" name="manufacturerId" value="<%= manufacturer._id %>">
+                    <div><label for="targetAudience-<%= product._id %>">Target Audience:</label>
+                        <input type="text" id="targetAudience-<%= product._id %>" name="targetAudience" placeholder="e.g., Tech enthusiasts, DIY crafters"></div>
+                    <button type="submit">Generate Campaign Assets</button>
+                </form>
+            </div>
+        </div>
+    <% }) %>
+<% } else { %>
+    <p>No products found for this manufacturer. A default product might be created when a deal is 'Closed - Won'. You can refine it here.</p>
+    <p>If a deal was just closed, <a href="/ui/deals">return to Deals</a> and ensure the product was created, then refresh this page.</p>
+<% } %>
+
+<h3>Campaigns for <%= manufacturer.name %></h3>
+<% if (campaigns.length > 0) { %>
+    <table>
+        <thead>
+        <tr>
+            <th>Product</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% campaigns.forEach(campaign => { %>
+            <tr>
+                <td><%= campaign.product.name %></td>
+                <td><span class="status-<%= campaign.status.replace('_', '-') %>"><%= campaign.status.replace('_',' ').toUpperCase() %></span></td>
+                <td><%= new Date(campaign.createdAt).toLocaleDateString() %></td>
+                <td>
+                    <a href="/automation/campaign/<%= campaign._id %>">View Details</a>
+                    <%# Add buttons for "launch" (simulated) or "mark complete" here if needed %>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p>No campaigns generated yet for this manufacturer's products.</p>
+<% } %>
+
+
+<%- include('partials/footer') %>

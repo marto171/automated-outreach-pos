@@ -1,0 +1,13 @@
+</main>
+<footer>
+    <p>© <%= new Date().getFullYear() %> Automated Outreach PoC. Powered by Node.js & Gemini AI.</p>
+</footer>
+<script>
+    // Simple script to auto-hide messages after a few seconds
+    setTimeout(() => {
+        const messages = document.querySelectorAll('.message');
+        messages.forEach(msg => msg.style.display = 'none');
+    }, 5000);
+</script>
+</body>
+</html>

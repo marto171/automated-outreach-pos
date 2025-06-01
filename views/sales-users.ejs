@@ -1,0 +1,45 @@
+<%- include('partials/header', { title: title }) %>
+
+<h2><%= title %></h2>
+<p>Manage users/sales agents and their areas of expertise. This information can be used by the feedback agent to understand context.</p>
+
+<div class="action-section">
+    <h3>Add New Sales User</h3>
+    <form action="/ui/sales-users/add" method="POST" class="form-layout">
+        <div><label for="name">Name:</label><input type="text" id="name" name="name" required></div>
+        <div><label for="email">Email:</label><input type="email" id="email" name="email" required></div>
+        <div>
+            <label for="areaOfExpertise">Area of Expertise:</label>
+            <input type="text" id="areaOfExpertise" name="areaOfExpertise" placeholder="e.g., electronics, apparel, home goods" required>
+        </div>
+        <button type="submit">Add User</button>
+    </form>
+</div>
+
+<h3>Current Sales Users</h3>
+<% if (users.length > 0) { %>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Area of Expertise</th>
+            <th>Sales Success (Placeholder)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% users.forEach(user => { %>
+            <tr>
+                <td><%= user.name %></td>
+                <td><%= user.email %></td>
+                <td><%= user.areaOfExpertise %></td>
+                <td><%= user.salesSuccessRate %>%</td> <%# Placeholder value %>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p>No sales users added yet.</p>
+<% } %>
+
+<%- include('partials/footer') %>

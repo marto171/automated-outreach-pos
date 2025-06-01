@@ -1,0 +1,75 @@
+<%- include('partials/header', { title: title }) %>
+
+<h2><%= title %></h2>
+
+<div class="action-section">
+    <h3>Simulate Sourcing Agent</h3>
+    <form action="/sourcing/scan" method="POST">
+        <button type="submit">Scan for Potential Manufacturers (Simulated)</button>
+    </form>
+</div>
+
+<div class="action-section">
+    <h3>Manually Add Manufacturer</h3>
+    <form action="/sourcing/add-manufacturer" method="POST" class="form-layout">
+        <div><label for="name">Name:</label><input type="text" id="name" name="name" required></div>
+        <div><label for="contactEmail">Email:</label><input type="email" id="contactEmail" name="contactEmail" required></div>
+        <div><label for="contactPhone">Phone:</label><input type="text" id="contactPhone" name="contactPhone"></div>
+        <div><label for="alibabaProfileUrl">Alibaba URL:</label><input type="url" id="alibabaProfileUrl" name="alibabaProfileUrl"></div>
+        <div><label for="reviews">Reviews:</label><input type="number" id="reviews" name="reviews" value="0"></div>
+        <div><label for="lowSalesVolume">Low Sales Volume:</label><input type="checkbox" id="lowSalesVolume" name="lowSalesVolume" checked></div>
+        <div><label for="highProductAvailability">High Availability:</label><input type="checkbox" id="highProductAvailability" name="highProductAvailability" checked></div>
+        <button type="submit">Add Manufacturer</button>
+    </form>
+</div>
+
+<h3>Identified Manufacturers</h3>
+<% if (manufacturers.length > 0) { %>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Reviews</th>
+            <th>Low Sales</th>
+            <th>High Avail.</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% manufacturers.forEach(m => { %>
+            <tr>
+                <td><%= m.name %></td>
+                <td><%= m.contactEmail %></td>
+                <td><%= m.contactPhone || 'N/A' %></td>
+                <td><span class="status-<%= m.status.replace('_', '-') %>"><%= m.status.replace('_', ' ').toUpperCase() %></span></td>
+                <td><%= m.reviews %></td>
+                <td><%= m.lowSalesVolume ? 'Yes' : 'No' %></td>
+                <td><%= m.highProductAvailability ? 'Yes' : 'No' %></td>
+                <td>
+                    <% if (m.status === 'identified' || m.status === 'negative_response') { %>
+                        <form action="/sourcing/<%= m._id %>/send-outreach" method="POST" style="display:inline;">
+                                <textarea name="companyTerms" placeholder="Enter Company Terms for this Outreach" rows="3" style="width:90%; margin-bottom:5px;" required>Example Term 1: We take a 15% commission on net sales.
+Example Term 2: We handle all marketing and website setup.
+Example Term 3: 12-month initial contract.</textarea>
+                            <button type="submit">Send Outreach</button>
+                        </form>
+                    <% } else if (m.status === 'contacted' || m.status === 'positive_response' || m.status === 'deal_pending') { %>
+                        <a href="/ui/deals#deal-<%= m._id %>">View in Deals</a>
+                    <% } else if (m.status === 'deal_closed' || m.status === 'campaign_active' || m.status === 'feedback_provided') { %>
+                        <a href="/automation/manage/<%= m._id %>">Manage Automation</a>
+                    <% } else { %>
+                        Outreach Sent
+                    <% } %>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p>No manufacturers identified yet. Try scanning or adding one manually.</p>
+<% } %>
+
+<%- include('partials/footer') %>

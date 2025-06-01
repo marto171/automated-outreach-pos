@@ -1,0 +1,100 @@
+<%- include('partials/header', { title: title }) %>
+
+<h2><%= title %></h2>
+
+<h3>Actionable Deal Menu (Positive Responses Requiring Action)</h3>
+<% if (actionableDeals.length > 0) { %>
+    <table>
+        <thead>
+        <tr>
+            <th>Manufacturer</th>
+            <th>Email</th>
+            <th>Phone Collected</th>
+            <th>Status</th>
+            <th>Terms Offered</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% actionableDeals.forEach(deal => { %>
+            <tr id="deal-<%= deal.manufacturer._id %>">
+                <td><%= deal.manufacturer.name %></td>
+                <td><%= deal.manufacturer.contactEmail %></td>
+                <td><%= deal.phoneNumberCollected || 'N/A' %></td>
+                <td><span class="status-<%= deal.status.replace('_', '-') %>"><%= deal.status.replace('_', ' ').toUpperCase() %></span></td>
+                <td><pre><%= deal.termsOffered %></pre></td>
+                <td>
+                    <!-- Form to update status to negotiating or closed -->
+                    <form action="/deals/<%= deal._id %>/update-status" method="POST" class="form-layout">
+                        <select name="status">
+                            <option value="negotiating" <%= deal.status === 'negotiating' ? 'selected' : '' %>>Negotiating</option>
+                            <option value="closed_won" <%= deal.status === 'closed_won' ? 'selected' : '' %>>Closed - Won</option>
+                            <option value="closed_lost" <%= deal.status === 'closed_lost' ? 'selected' : '' %>>Closed - Lost</option>
+                        </select>
+                        <label for="phone-<%= deal._id %>">Update Phone:</label>
+                        <input type="text" id="phone-<%= deal._id %>" name="phoneNumberCollected" value="<%= deal.phoneNumberCollected || '' %>" placeholder="Update Phone (if needed)">
+                        <button type="submit">Update Status</button>
+                    </form>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p>No deals currently require immediate action (e.g., positive responses).</p>
+<% } %>
+
+<hr>
+<h3>All Deals</h3>
+<% if (deals.length > 0) { %>
+    <table>
+        <thead>
+        <tr>
+            <th>Manufacturer</th>
+            <th>Contact Email</th>
+            <th>Collected Phone</th>
+            <th>Status</th>
+            <th>Terms Offered</th>
+            <th>Response/Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% deals.forEach(deal => { %>
+            <tr id="deal-<%= deal.manufacturer._id %>"> <!-- For linking from manufacturer page -->
+                <td><%= deal.manufacturer.name %></td>
+                <td><%= deal.manufacturer.contactEmail %></td>
+                <td><%= deal.phoneNumberCollected || 'N/A' %></td>
+                <td><span class="status-<%= deal.status.replace('_', '-') %>"><%= deal.status.replace('_', ' ').toUpperCase() %></span></td>
+                <td><pre><%= deal.termsOffered %></pre></td>
+                <td>
+                    <% if (deal.status === 'offer_sent' || deal.status === 'response_negative' /* allow re-eval for neutral maybe */ ) { %>
+                        <form action="/sourcing/<%= deal.manufacturer._id %>/process-response" method="POST" class="form-layout">
+                            <textarea name="responseText" placeholder="Paste manufacturer's email response here..." rows="3" required></textarea>
+                            <button type="submit">Process Response</button>
+                        </form>
+                    <% } else if (deal.status === 'response_positive' || deal.status === 'negotiating') { %>
+                        <form action="/deals/<%= deal._id %>/update-status" method="POST" class="form-layout">
+                            <select name="status">
+                                <option value="negotiating" <%= deal.status === 'negotiating' ? 'selected' : '' %>>Negotiating</option>
+                                <option value="closed_won">Closed - Won</option>
+                                <option value="closed_lost">Closed - Lost</option>
+                            </select>
+                            <label for="all-phone-<%= deal._id %>">Update Phone:</label>
+                            <input type="text" id="all-phone-<%= deal._id %>" name="phoneNumberCollected" value="<%= deal.phoneNumberCollected || '' %>" placeholder="Update Phone (if needed)">
+                            <button type="submit">Update Status</button>
+                        </form>
+                    <% } else if (deal.status === 'closed_won') { %>
+                        <a href="/automation/manage/<%= deal.manufacturer._id %>">Manage Automation</a>
+                    <% } else { %>
+                        <%= deal.status.replace('_', ' ').toUpperCase() %>
+                    <% } %>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p>No deals found. Start by sending outreach to manufacturers.</p>
+<% } %>
+
+<%- include('partials/footer') %>

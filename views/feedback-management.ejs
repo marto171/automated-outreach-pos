@@ -1,0 +1,79 @@
+<%- include('partials/header', { title: title }) %>
+
+<h2><%= title %></h2>
+<p>Monitor product performance and generate suggestions for manufacturers.</p>
+
+<% if (products.length > 0) { %>
+    <table>
+        <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Manufacturer</th>
+            <th>Category</th>
+            <th>Current Sales (Units/Metric)</th>
+            <th>Underperforming?</th>
+            <th>Actions</th>
+            <th>Suggestions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% products.forEach(product => { %>
+            <tr>
+                <td><%= product.name %></td>
+                <td><%= product.manufacturer.name %> (<span class="status-<%= product.manufacturer.status.replace('_', '-') %>"><%= product.manufacturer.status.replace('_',' ').toUpperCase() %></span>)</td>
+                <td><%= product.category %></td>
+                <td>
+                    <form action="/feedback/product/<%= product._id %>/update-performance" method="POST" class="inline-form">
+                        <input type="number" name="salesFigure" value="<%= product.currentSalesPerformance %>" style="width: 80px;">
+                        <button type="submit" class="small-button">Update</button>
+                </td>
+                <td>
+                    <input type="checkbox" name="isUnderperforming" <%= product.isUnderperforming ? 'checked' : '' %>
+                           onchange="this.form.submit()"> <!-- Submit form on change -->
+                    </form>
+                </td>
+                <td>
+                    <% if (product.isUnderperforming) { %>
+                        <form action="/feedback/product/<%= product._id %>/suggest-change" method="POST" class="inline-form">
+                            <textarea name="reasonForUnderperformance" placeholder="Optional: Reason for underperformance" rows="2" style="width:150px;"></textarea>
+                            <button type="submit" class="small-button">Suggest Change</button>
+                        </form>
+                    <% } else { %>
+                        N/A
+                    <% } %>
+                </td>
+                <td>
+                    <% if (product.suggestedChanges && product.suggestedChanges.length > 0) { %>
+                        <ul>
+                            <% product.suggestedChanges.slice(-2).forEach(suggestion => { %> <%# Show last 2 suggestions %>
+                            <li>
+                                <strong><%= suggestion.suggestion %></strong> (<%= new Date(suggestion.dateSuggested).toLocaleDateString() %>):
+                                <small><%= suggestion.reason.substring(0,100) %>...</small>
+                            </li>
+                            <% }) %>
+                        </ul>
+                    <% } else { %>
+                        No suggestions yet.
+                    <% } %>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p>No products available for feedback. Ensure deals are closed and products are created.</p>
+<% } %>
+
+<h3>Sales User Expertise (Reference)</h3>
+<% if (users.length > 0) { %>
+    <ul>
+        <% users.forEach(user => { %>
+            <li><strong><%= user.name %>:</strong> <%= user.areaOfExpertise %></li>
+        <% }) %>
+    </ul>
+<% } else { %>
+    <p>No sales users/experts defined. <a href="/ui/sales-users">Add Sales Users</a>.</p>
+<% } %>
+
+
+<%- include('partials/footer') %>

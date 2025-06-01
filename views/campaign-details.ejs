@@ -1,0 +1,55 @@
+<%- include('partials/header', { title: title }) %>
+
+<h2><%= title %></h2>
+<p><strong>Manufacturer:</strong> <%= campaign.manufacturer.name %></p>
+<p><strong>Product:</strong> <%= campaign.product.name %></p>
+<p><strong>Status:</strong> <span class="status-<%= campaign.status.replace('_', '-') %>"><%= campaign.status.replace('_',' ').toUpperCase() %></span></p>
+<p><strong>Generated On:</strong> <%= new Date(campaign.createdAt).toLocaleString() %></p>
+
+<div class="card">
+    <h3>Generated Ad Copy</h3>
+    <% if (adCopy && adCopy.length > 0) { %>
+        <% adCopy.forEach(ad => { %>
+            <div class="ad-item">
+                <h4><%= ad.platform %></h4>
+                <% if(ad.headline) { %><p><strong>Headline:</strong> <%= ad.headline %></p><% } %>
+                <% if(ad.headline1) { %><p><strong>Headline 1:</strong> <%= ad.headline1 %></p><% } %>
+                <% if(ad.headline2) { %><p><strong>Headline 2:</strong> <%= ad.headline2 %></p><% } %>
+                <% if(ad.body) { %><p><strong>Body:</strong> <%= ad.body %></p><% } %>
+                <% if(ad.description) { %><p><strong>Description:</strong> <%= ad.description %></p><% } %>
+                <% if(ad.cta) { %><p><strong>CTA:</strong> <%= ad.cta %></p><% } %>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p>No ad copy generated.</p>
+    <% } %>
+</div>
+
+<div class="card">
+    <h3>Promotional Video Script Idea</h3>
+    <% if (videoScriptIdea) { %>
+        <h4>Title Idea: <%= videoScriptIdea.title %></h4>
+        <p><strong>Concept:</strong></p>
+        <p><%= videoScriptIdea.concept %></p>
+        <p><strong>Voiceover/Narration Idea:</strong></p>
+        <p><%= videoScriptIdea.voiceoverNarrationIdea %></p>
+    <% } else { %>
+        <p>No video script idea generated.</p>
+    <% } %>
+</div>
+
+<div class="card">
+    <h3>Email Campaign Subject Idea</h3>
+    <% if (campaign.generatedEmailSubject) { // Assuming you add this field if generated %>
+    <p><strong>Subject:</strong> <%= campaign.generatedEmailSubject %></p>
+    <% } else if (videoScriptIdea && videoScriptIdea.emailCampaignSubject) { // Check if it's part of videoScriptIdea from Gemini response %>
+    <p><strong>Subject:</strong> <%= videoScriptIdea.emailCampaignSubject %></p>
+    <% } else { %>
+        <p>No email subject idea generated.</p>
+    <% } %>
+</div>
+
+
+<a href="/automation/manage/<%= campaign.manufacturer._id %>" class="button-link">Back to Automation for <%= campaign.manufacturer.name %></a>
+
+<%- include('partials/footer') %>
