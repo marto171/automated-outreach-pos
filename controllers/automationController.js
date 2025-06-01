@@ -62,7 +62,7 @@ exports.generateProductSite = async (req, res) => {
 
         // In a real app, you might save the full 'siteContent' JSON or deploy actual files.
         // For this PoC, we'll just store a conceptual URL and the main content.
-        product.websiteUrl = `/product-site/${product._id}`; // This will be a route to render the EJS template
+        product.websiteUrl = `/product-site/${product._id}`; // This will be a routes to render the EJS template
         await product.save();
 
         // Store the generated content temporarily in session or pass directly to view if redirecting to the site itself
