@@ -1,0 +1,31 @@
+{
+  "name": "automated-outreach-poc",
+  "version": "1.0.0",
+  "description": "Automated Outreach Program PoC",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "nodejs",
+    "mongodb",
+    "gemini-ai",
+    "ejs"
+  ],
+  "author": "AI Assistant",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.11.3",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.0",
+    "nodemailer": "^6.9.13",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.2"
+  }
+}
